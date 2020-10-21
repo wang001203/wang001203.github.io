@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="最短路算法1, Reed">
+    <meta name="keywords" content="基础算法1.排序, Reed">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>最短路算法1 | Reed</title>
+    <title>基础算法1.排序 | Reed</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">最短路算法1</h1>
+                    <h1 class="description center-align post-title">基础算法1.排序</h1>
                 </div>
             </div>
         </div>
@@ -444,7 +444,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-10-17
+                    2020-10-21
                 </div>
                 
 
@@ -460,57 +460,56 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Dijkstra未优化版</p>
-<pre><code>#include&lt;iostream&gt;
-#include&lt;algorithm&gt;
-#include&lt;cstring&gt;
-using namespace std;
-const int N=501;
-int n, m;
-int g[N][N];
-int d[N];
-bool st[N];
-
-int dijkstra()
+                <h1 id="快速排序算法"><a href="#快速排序算法" class="headerlink" title="快速排序算法"></a><strong>快速排序算法</strong></h1><p>递归，分治，双指针<br>实现思路：</p>
+<ol>
+<li><p>取数轴任意一点的值 X 将数轴划分为所有点的值大于 X ，所有点的值小于 X 两个区间</p>
+</li>
+<li><p>递归，在被划分出来的新区间里按原来的规则继续找到新的 X 这样又会产生两个新的区间</p>
+</li>
+<li><p><font color=red><strong>以左边区间为例，每次新的划分点的值必然要小于等于原来划分点的值</strong></font>，当区间小到仅含有 1 个数时，这个区间毫无疑问就是有序的，同时也完成了整个区间的排序</p>
+</li>
+</ol>
+<p>   可以使用指针来完成上述操作，在数组两端分别定义两个指针，当两个指针满足对应的不等式时，向中间移动，当两个指针无法移动但未相遇时，交换两个指针所指向的值，以两个指针相遇作为每一轮交换结束的标志。</p>
+<pre><code class="c++">\\算法模板
+void quick_sort(int q[], int l, int r)
 &#123;
-    memset(d, 0x3f, sizeof d);
-    d[1]=0; 
-    for(int i=1; i&lt;=n ;i++)
-    &#123;
-        int t=-1;
-        for(int j=1;j&lt;=n;j++)
-        &#123;
-            if(!st[j]&amp;&amp;(t==-1||d[j]&lt;d[t]))
-            &#123;
-                t=j;
-            &#125;
-        &#125;
-        st[t]=true;
-        for(int j=1;j&lt;=n;j++)
-        &#123;
-            d[j]=min(d[j], d[t]+g[t][j]);
-        &#125;
-    &#125;
-    if(d[n]==0x3f3f3f3f)  return -1;
-    return d[n];
-&#125;
-
-int main()
+      if(l&gt;=r) return;
+      int x=q[(l+r)/2], i=l-1, j=r+1;//防止指针越界
+      while(i&lt;j)&#123;
+      do i++; while(q[i]&lt;x);
+      do j--; while(q[j]&lt;x);
+      if(i&lt;j) swap(q[i], q[j]);//库里没有这个函数可以写三变量交换
+      &#125;
+      quick_sort(q, l, j);
+      quick_sort(q, j+1, r);//注意指针的位置，递归处理每一个小区间，直到完成。
+ &#125;</code></pre>
+<p>时间复杂度：划分点理论上可以随机选取，但如果每次取到边界，以左边界为例，会形成 [L,L] [L-1,R] 两个区间，那么相当于每次递归右半部分的区间长度只会减少1，所以就需要递归 n−1次了，时间复杂度会达到 $O(n^2)$。但每次选择区间中点或者随机值时，划分的两个子区间长度会比较均匀，那么期望只会递归 logn层，时间复杂度$O(logn)$</p>
+<p><em>时间复杂度证明很复杂，此处不做详细说明</em></p>
+<h1 id="归并排序算法"><a href="#归并排序算法" class="headerlink" title="归并排序算法"></a>归并排序算法</h1><p>实现过程：</p>
+<ol>
+<li><p>以数轴的中点为分界点，将数轴划分为两个区域</p>
+</li>
+<li><p>进行递归不断重复，直到整个数轴划分为每个区间只含有一个数的小区间集合，此时每一个区间都是有序的</p>
+</li>
+<li><p>之后进行回溯，从只有一个数的区间开始，每一次定义两个指针指向两个序列的第一个数，即该序列地min，比较两个指针所指的值，小的放入新建数组res，指针向后移一位，直到一个指针到达终点，补上后续的所有数。结束后将res数组的值复制到原数组中，每次按这样更新，最后的结果就是有序的。</p>
+</li>
+</ol>
+<pre><code class="c++">\\算法模板
+void msort(int q[], int l, int r)
 &#123;
-    memset(g, 0x3f, sizeof g);
-    cin&gt;&gt;n&gt;&gt;m;
-    while(m--)
-    &#123;
-        int a,b,c;
-        cin&gt;&gt;a&gt;&gt;b&gt;&gt;c;
-        g[a][b]=min(g[a][b], c);
-    &#125;
-
-    int t=dijkstra();
-
-    cout&lt;&lt;t&lt;&lt;endl;
-    return 0;
-&#125;</code></pre>
+    if(l&gt;=r) return;
+    int mid = (l+r)/2;
+    msort(q, l, mid); msort(q, mid+1, r);
+    int k=0, i=l, j=mid+1;
+    while(i&lt;=mid&amp;&amp;j&lt;=r)
+        if(q[i]&lt;=q[j]) res[k++]=q[i++];
+        else res[k++]=q[j++];
+    while(i&lt;=mid) res[k++]=q[i++];
+    while(j&lt;=r) res[k++]=q[j++];
+    for(int i = l, j=0;i&lt;=r; i++,j++) q[i] = res[j];
+</code></pre>
+<p>   时间复杂度：$O(nlogn)$</p>
+<p><a target="_blank" rel="noopener" href="https://visualgo.net/zh/sorting">算法可视化</a></p>
 
             </div>
             <hr/>
@@ -536,7 +535,7 @@ int main()
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://wang001203.github.io/2020/10/17/%E6%9C%80%E7%9F%AD%E8%B7%AF%E7%AE%97%E6%B3%951/">https://wang001203.github.io/2020/10/17/%E6%9C%80%E7%9F%AD%E8%B7%AF%E7%AE%97%E6%B3%951/</a>
+                    <a href="https://wang001203.github.io/2020/10/21/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%951-%E6%8E%92%E5%BA%8F/">https://wang001203.github.io/2020/10/21/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%951-%E6%8E%92%E5%BA%8F/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -744,13 +743,13 @@ int main()
                 <i class="far fa-dot-circle"></i>&nbsp;本篇
             </div>
             <div class="card">
-                <a href="/2020/10/17/%E6%9C%80%E7%9F%AD%E8%B7%AF%E7%AE%97%E6%B3%951/">
+                <a href="/2020/10/21/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%951-%E6%8E%92%E5%BA%8F/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="最短路算法1">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="基础算法1.排序">
                         
-                        <span class="card-title">最短路算法1</span>
+                        <span class="card-title">基础算法1.排序</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -761,7 +760,7 @@ int main()
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-17
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-21
                             </span>
                         <span class="publish-author">
                             
